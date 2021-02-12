@@ -29,7 +29,7 @@ axios.get('https://api.github.com/users/padawan98').then(response=>{console.log(
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+// const followersArray = [];
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -121,8 +121,6 @@ axios.get('https://api.github.com/users/padawan98')
 .then(response =>
   {
     const myData = response.data;  //fetch data => myData
-    // console.log('Step 4 res = ', response);
-    // console.log('Step 4 res.data = ', response.data);
     entryPoint.appendChild(cardMaker(myData)); //entryPoint = place in dom
   })
 .catch(err =>
@@ -130,35 +128,42 @@ axios.get('https://api.github.com/users/padawan98')
     console.log(err);
   });
 
+
 //putting following usernames in array
-axios.get('https://api.github.com/users/padawan98/following')
+const followersArray = [];
+axios.get('https://api.github.com/users/padawan98/followers')
 .then(response =>
   {
     let myArr = response.data;
+    console.log(myArr);
     myArr.forEach(element => 
     {
       followersArray.push(element.login);  
+      // console.log(followersArray); 
     });
+
+    //looping for loop, fetching profile of following users
+    followersArray.forEach(element =>
+      {
+        axios.get(`https://api.github.com/users/${element}`)
+        .then(response =>
+          {
+            let frensData = response.data;  //fetch data => frensData
+            // console.log("friends: ", frensData);
+            entryPoint.appendChild(cardMaker(frensData)); //entryPoint = .cards
+          })
+        .catch(err =>
+          {
+            console.log(err);
+          }); 
+      }); 
   })
 .catch(err =>
   {
     console.log(err);
   });
 
-//looping for loop, fetching profile of following users
-followersArray.forEach(element =>
-{
-  axios.get('https://api.github.com/users/' + element)
-  .then(response =>
-    {
-      let frensData = response.data;  //fetch data => frensData
-      entryPoint.appendChild(cardMaker(frensData)); //entryPoint = place in dom
-    })
-  .catch(err =>
-    {
-      console.log(err);
-    }); 
-});
+// const followersArray = [ 'tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
 
 /*
   List of LS Instructors Github username's:
